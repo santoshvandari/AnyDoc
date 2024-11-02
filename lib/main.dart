@@ -50,17 +50,22 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: Colors.green,
       ),
       backgroundColor: Colors.green[100],
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            _pickFile(context);
-          },
-          child: const Text(
-            'Pick and Open File',
-            style: TextStyle(color: Colors.white),
-          ),
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-        ),
+      // body: Center(
+      //   child: ElevatedButton(
+      //     onPressed: () {
+      //       _pickFile(context);
+      //     },
+      //     child: const Text(
+      //       'Pick and Open File',
+      //       style: TextStyle(color: Colors.white),
+      //     ),
+      //     style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+      //   ),
+      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _pickFile(context),
+        child: Icon(Icons.add),
+        backgroundColor: Colors.green,
       ),
     );
   }
