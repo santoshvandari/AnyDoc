@@ -1,6 +1,6 @@
 import 'package:file_picker/file_picker.dart';
-import 'package:open_file/open_file.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 
 void main() {
   runApp(MyApp());
@@ -27,23 +27,16 @@ class HomeScreen extends StatelessWidget {
     // Get the file from the result object
     final file = result.files.first;
 
-    // Open the file
-    _openFile(context, file);
-  }
-
-  void _openFile(BuildContext context, PlatformFile file) async {
-    if (file.path != null) {
-      final result = await OpenFile.open(file.path);
-      // Optionally show a message based on the result
-      if (result.message != null && result.message!.isNotEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(result.message!)),
-        );
-      }
+    // Check the file type
+    if (file.extension == 'pdf') {
+      // Open the PDF file
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => PDFScreen(filePath: file.path!),
+      ));
     } else {
-      // Handle the case when the file path is null
+      // Handle other file types as necessary
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('File path is null.')),
+        SnackBar(content: Text('Unsupported file type.')),
       );
     }
   }
@@ -68,6 +61,32 @@ class HomeScreen extends StatelessWidget {
           ),
           style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
         ),
+      ),
+    );
+  }
+}
+
+class PDFScreen extends StatelessWidget {
+  final String filePath;
+
+  PDFScreen({required this.filePath});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('PDF Viewer'),
+        backgroundColor: Colors.green,
+      ),
+      body: PDFView(
+        filePath: filePath,
+        enableSwipe: true,
+        swipeHorizontal: false,
+        autoSpacing: false,
+        pageFling: false,
+        onPageChanged: (int? page, int? total) {
+          print('Page $page of $total');
+        },
       ),
     );
   }
