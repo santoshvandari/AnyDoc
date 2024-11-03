@@ -26,6 +26,21 @@ class FilePickerScreen {
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => PDFViewer(filePath: file.path),
       ));
+    } else if (file.path.endsWith('.docx') || file.path.endsWith('.doc')) {
+      // Open the PDF file
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => PDFViewer(filePath: file.path),
+      ));
+    } else if (file.path.endsWith('.xlsx') || file.path.endsWith('.xls')) {
+      // Open the PDF file
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => PDFViewer(filePath: file.path),
+      ));
+    } else if (file.path.endsWith('.pptx') || file.path.endsWith('.ppt')) {
+      // Open the PDF file
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => PDFViewer(filePath: file.path),
+      ));
     } else {
       // Show the alert dialog for unsupported file type
       _showUnsupportedFileTypeDialog(context);
