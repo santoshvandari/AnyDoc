@@ -9,44 +9,27 @@ class HomeScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          flexibleSpace: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Color(0xFF53826E),
-                  Color(0xFF223A56),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-          ),
+          backgroundColor: const Color(0xFF3E699C),
           title: const Text('AnyDoc'),
           centerTitle: true,
-          backgroundColor: Colors.transparent,
+          foregroundColor: Colors.white,
+          elevation: 5,
         ),
         body: const RecentScreen(),
         floatingActionButton: Container(
-          decoration: const BoxDecoration(
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.all(Radius.circular(20)),
-            gradient: LinearGradient(
-              colors: [
-                Color(0xFF3e699c),
-                Color(0xFF2a3f36),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
+          margin: const EdgeInsets.only(bottom: 20),
           child: FloatingActionButton(
             onPressed: () {
               // Adding the Action to be performed on Floating Action Button
               debugPrint('Floating Action Button Pressed');
             },
-            backgroundColor: Colors.transparent,
+            backgroundColor: const Color(0xFF3E699C),
             elevation: 0,
-            child: const Icon(Icons.add),
+            child: const Icon(
+              Icons.add,
+              size: 25,
+              color: Colors.white,
+            ),
           ),
         ),
       ),
