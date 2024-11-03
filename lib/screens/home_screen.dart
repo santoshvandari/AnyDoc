@@ -1,3 +1,4 @@
+import 'package:anydoc/filepicker/file_picker.dart';
 import 'package:anydoc/screens/recent_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +22,8 @@ class HomeScreen extends StatelessWidget {
           child: FloatingActionButton(
             onPressed: () {
               // Adding the Action to be performed on Floating Action Button
-              debugPrint('Floating Action Button Pressed');
+              // debugPrint('Floating Action Button Pressed');
+              FilePickerScreen().pickFile(context);
             },
             backgroundColor: const Color(0xFF3E699C),
             elevation: 0,

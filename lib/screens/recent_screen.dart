@@ -62,10 +62,12 @@ class RecentScreen extends StatelessWidget {
                         icon: const Icon(Icons.more_vert),
                         onPressed: () {
                           // Action for more options
+                          debugPrint('More options for ${document['title']}');
                         },
                       ),
                       onTap: () {
                         // Action to open the document
+                        debugPrint('Opening document: ${document['title']}');
                       },
                     ),
                   );
