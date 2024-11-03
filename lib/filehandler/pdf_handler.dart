@@ -1,3 +1,4 @@
+import 'package:anydoc/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 
@@ -16,7 +17,7 @@ class _PDFViewerState extends State<PDFViewer> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('PDF Viewer'),
+        title: const Text('AnyDoc'),
         backgroundColor: const Color(0xFF3E699C),
         foregroundColor: Colors.white,
         centerTitle: true,
@@ -35,16 +36,7 @@ class _PDFViewerState extends State<PDFViewer> {
               });
             },
             onError: (error) {
-              print(error.toString());
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Error loading PDF'),
-                  backgroundColor: Colors.red,
-                ),
-              );
-            },
-            onPageChanged: (int? page, int? total) {
-              print('Page $page of $total');
+              _showUnsupportedFileTypeDialog(context);
             },
           ),
           if (_isLoading)
@@ -53,6 +45,31 @@ class _PDFViewerState extends State<PDFViewer> {
             ),
         ],
       ),
+    );
+  }
+
+  void _showUnsupportedFileTypeDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Unsupported File Type'),
+          actions: [
+            Center(
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        builder: (context) => const HomeScreen(),
+                      ),
+                      (route) => false);
+                },
+                child: const Text('OK'),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
