@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:anydoc/filehandler/doc_handler.dart';
+// import 'package:anydoc/filehandler/doc_handler.dart';
 import 'package:anydoc/filehandler/pdf_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -34,19 +34,37 @@ class FilePickerScreen {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> recentFiles = prefs.getStringList('recent_files') ?? [];
 
-    // Add the new file to the recent files list
-    recentFiles.add(json.encode({
+    // Decode the recent files list from JSON
+    List<Map<String, dynamic>> recentDocuments = recentFiles
+        .map((file) => json.decode(file) as Map<String, dynamic>)
+        .toList();
+
+    // Check if the file already exists in the recent files list
+    final existingIndex =
+        recentDocuments.indexWhere((doc) => doc['file_path'] == file.path);
+
+    if (existingIndex != -1) {
+      // If file exists, remove it from its current position
+      recentDocuments.removeAt(existingIndex);
+    }
+
+    // Add the new/updated file to the top of the list with the current date
+    recentDocuments.insert(0, {
       'title': file.uri.pathSegments.last,
       'date': DateTime.now().toIso8601String(),
       'icon': 'pdf',
-    }));
+      'file_path': file.path,
+    });
 
-    // Limit the number of recent files to the last 10
-    if (recentFiles.length > 10) {
-      recentFiles.removeAt(0);
+    // Limit the list to the last 10 items
+    if (recentDocuments.length > 10) {
+      recentDocuments = recentDocuments.sublist(0, 10);
     }
 
-    await prefs.setStringList('recent_files', recentFiles);
+    // Save the updated recent files list back to SharedPreferences
+    List<String> updatedFiles =
+        recentDocuments.map((doc) => json.encode(doc)).toList();
+    await prefs.setStringList('recent_files', updatedFiles);
   }
 
   void _showLoadingDialog(BuildContext context) {

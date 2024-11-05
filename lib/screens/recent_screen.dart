@@ -1,6 +1,8 @@
+import 'package:anydoc/filehandler/pdf_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'dart:io';
 
 class RecentScreen extends StatefulWidget {
   const RecentScreen({super.key});
@@ -28,8 +30,78 @@ class _RecentScreenState extends State<RecentScreen> {
             .map((file) => json.decode(file))
             .toList()
             .cast<Map<String, dynamic>>();
+        recentDocuments.sort((a, b) {
+          return DateTime.parse(b['date']).compareTo(DateTime.parse(a['date']));
+        });
       });
     }
+  }
+
+  Future<void> _removeDocument(int index) async {
+    recentDocuments.removeAt(index);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> updatedFiles =
+        recentDocuments.map((doc) => json.encode(doc)).toList();
+    await prefs.setStringList('recent_files', updatedFiles);
+    setState(() {});
+  }
+
+  Future<void> _updateRecentDocument(Map<String, dynamic> document) async {
+    recentDocuments
+        .removeWhere((doc) => doc['file_path'] == document['file_path']);
+    recentDocuments.insert(0, document);
+    document['date'] = DateTime.now().toIso8601String();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> updatedFiles =
+        recentDocuments.map((doc) => json.encode(doc)).toList();
+    await prefs.setStringList('recent_files', updatedFiles);
+    setState(() {});
+  }
+
+  void _checkFileAndOpen(String filePath, String title) async {
+    final file = File(filePath);
+    if (await file.exists()) {
+      final document =
+          recentDocuments.firstWhere((doc) => doc['file_path'] == filePath);
+      _updateRecentDocument(document);
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => PDFViewer(filePath: filePath),
+      ));
+    } else {
+      debugPrint('File not found: $filePath. Removing from recent documents.');
+      _removeDocument(
+          recentDocuments.indexWhere((doc) => doc['file_path'] == filePath));
+    }
+  }
+
+  void _showOptions(BuildContext context, int index) {
+    final document = recentDocuments[index];
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.open_in_new),
+              title: const Text('Open'),
+              onTap: () {
+                Navigator.pop(context);
+                _checkFileAndOpen(document['file_path'], document['title']);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.delete),
+              title: const Text('Remove'),
+              onTap: () {
+                Navigator.pop(context);
+                _removeDocument(index);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -74,9 +146,8 @@ class _RecentScreenState extends State<RecentScreen> {
                             title: Text(
                               document['title'] as String,
                               style: const TextStyle(fontSize: 18),
-                              overflow: TextOverflow
-                                  .ellipsis, // This will add the ellipsis
-                              maxLines: 1, // Limits the title to one line
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
                             ),
                             subtitle: Text(
                               'Opened on ${DateTime.parse(document['date']).toLocal().toString().split(' ')[0]}',
@@ -85,13 +156,12 @@ class _RecentScreenState extends State<RecentScreen> {
                             trailing: IconButton(
                               icon: const Icon(Icons.more_vert),
                               onPressed: () {
-                                debugPrint(
-                                    'More options for ${document['title']}');
+                                _showOptions(context, index);
                               },
                             ),
                             onTap: () {
-                              debugPrint(
-                                  'Opening document: ${document['title']}');
+                              _checkFileAndOpen(
+                                  document['file_path'], document['title']);
                             },
                           ),
                         );
