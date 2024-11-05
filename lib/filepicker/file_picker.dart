@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:anydoc/filehandler/doc_handler.dart';
 import 'package:anydoc/filehandler/pdf_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -30,6 +31,7 @@ class FilePickerScreen {
       // Open the PDF file
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => PDFViewer(filePath: file.path),
+        // builder: (context) => DocxViewer(filePath: file.path),
       ));
     } else if (file.path.endsWith('.xlsx') || file.path.endsWith('.xls')) {
       // Open the PDF file
