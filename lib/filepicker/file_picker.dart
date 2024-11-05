@@ -1,59 +1,58 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:anydoc/filehandler/doc_handler.dart';
 import 'package:anydoc/filehandler/pdf_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FilePickerScreen {
   void pickFile(BuildContext context) async {
-    // Show the preloader while the file is being processed
     _showLoadingDialog(context);
 
-    // Open storage to pick files
     FilePickerResult? result = await FilePicker.platform.pickFiles();
 
-    // Hide the preloader as file picking is complete
     Navigator.of(context).pop();
 
-    // If no file is picked, return
     if (result == null || result.files.isEmpty) return;
 
-    // Get the file from the result object
     File file = File(result.files.single.path!);
 
-    // Check the file type
+    // Save the recently opened file information
+
     if (file.path.endsWith('.pdf')) {
-      // Open the PDF file
-      Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => PDFViewer(filePath: file.path),
-      ));
-    } else if (file.path.endsWith('.docx') || file.path.endsWith('.doc')) {
-      // Open the PDF file
-      Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => PDFViewer(filePath: file.path),
-        // builder: (context) => DocxViewer(filePath: file.path),
-      ));
-    } else if (file.path.endsWith('.xlsx') || file.path.endsWith('.xls')) {
-      // Open the PDF file
-      Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => PDFViewer(filePath: file.path),
-      ));
-    } else if (file.path.endsWith('.pptx') || file.path.endsWith('.ppt')) {
-      // Open the PDF file
+      _saveRecentFile(file);
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => PDFViewer(filePath: file.path),
       ));
     } else {
-      // Show the alert dialog for unsupported file type
       _showUnsupportedFileTypeDialog(context);
     }
+  }
+
+  Future<void> _saveRecentFile(File file) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> recentFiles = prefs.getStringList('recent_files') ?? [];
+
+    // Add the new file to the recent files list
+    recentFiles.add(json.encode({
+      'title': file.uri.pathSegments.last,
+      'date': DateTime.now().toIso8601String(),
+      'icon': 'pdf',
+    }));
+
+    // Limit the number of recent files to the last 10
+    if (recentFiles.length > 10) {
+      recentFiles.removeAt(0);
+    }
+
+    await prefs.setStringList('recent_files', recentFiles);
   }
 
   void _showLoadingDialog(BuildContext context) {
     showDialog(
       context: context,
-      barrierDismissible:
-          false, // Prevents closing the dialog by tapping outside
+      barrierDismissible: false,
       builder: (context) {
         return const Center(
           child: CircularProgressIndicator(),
