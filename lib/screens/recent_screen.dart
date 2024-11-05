@@ -7,7 +7,11 @@ class RecentScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Mock data for recently opened documents
     final recentDocuments = [
-      {'title': 'Document 1', 'date': 'Nov 1, 2024', 'icon': Icons.description},
+      {
+        'title': 'Document 1',
+        'date': 'Nov 1, 2024',
+        'icon': Icons.description,
+      },
       {
         'title': 'Document 2',
         'date': 'Oct 30, 2024',
