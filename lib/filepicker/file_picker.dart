@@ -20,14 +20,15 @@ class FilePickerScreen {
     File file = File(result.files.single.path!);
 
     // Save the recently opened file information
+    // Icons.table_chart_outlined
 
     if (file.path.endsWith('.pdf')) {
-      _saveRecentFile(file, const Icon(Icons.picture_as_pdf));
+      _saveRecentFile(file, "pdf");
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => PDFViewer(filePath: file.path),
       ));
     } else if (file.path.endsWith(".xlsx") || file.path.endsWith(".xls")) {
-      _saveRecentFile(file, const Icon(Icons.table_chart));
+      _saveRecentFile(file, "excel");
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => ExcelViewer(filePath: file.path),
       ));
@@ -36,7 +37,7 @@ class FilePickerScreen {
     }
   }
 
-  Future<void> _saveRecentFile(File file, Icon icondata) async {
+  Future<void> _saveRecentFile(File file, String icondata) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> recentFiles = prefs.getStringList('recent_files') ?? [];
 

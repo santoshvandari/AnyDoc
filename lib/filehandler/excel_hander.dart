@@ -85,10 +85,14 @@ class _ExcelViewerState extends State<ExcelViewer> {
               scrollDirection: Axis.horizontal,
               child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Table(
+                  border: TableBorder.all(
+                    color: Colors.black, // Border color for cells
+                    width: 1, // Border width
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                   children: _excelData!.map((row) {
-                    return Row(
+                    return TableRow(
                       children: row.map((cell) {
                         return Container(
                           padding: const EdgeInsets.all(8.0),

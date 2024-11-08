@@ -125,10 +125,6 @@ class _RecentScreenState extends State<RecentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Recently Opened Documents'),
-        backgroundColor: const Color(0xFF3E699C),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -161,10 +157,8 @@ class _RecentScreenState extends State<RecentScreen> {
                           ),
                           margin: const EdgeInsets.symmetric(vertical: 8),
                           child: ListTile(
-                            leading: Icon(
-                              IconData(
-                                  // document['icon'],
-                                  Icons.picture_as_pdf),
+                            leading: const Icon(
+                              Icons.table_chart_outlined,
                               color: const Color(0xFF3E699C),
                             ),
                             title: Text(
