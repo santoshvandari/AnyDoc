@@ -1,4 +1,4 @@
-import 'package:excel/excel.dart';
+import 'package:excel/excel.dart' as excel_lib;
 import 'package:flutter/material.dart';
 import 'dart:io';
 
@@ -12,8 +12,8 @@ class ExcelViewer extends StatefulWidget {
 }
 
 class _ExcelViewerState extends State<ExcelViewer> {
-  List<List<String>>? _excelData;
-  bool _isLoading = true; // Initial loading state
+  List<List<String>> _excelData = [];
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -24,16 +24,23 @@ class _ExcelViewerState extends State<ExcelViewer> {
   Future<void> _loadExcelData() async {
     try {
       var fileBytes = await File(widget.filePath).readAsBytes();
-      var excel = Excel.decodeBytes(fileBytes);
+      var excel = excel_lib.Excel.decodeBytes(fileBytes);
+
+      if (excel == null) {
+        _showUnsupportedFileTypeDialog(context);
+        return;
+      }
 
       List<List<String>> excelData = [];
 
-      // Extract data from the first table only for simplicity
       for (var table in excel.tables.keys) {
         for (var row in excel.tables[table]!.rows) {
           var rowData =
               row.map((cell) => cell?.value.toString() ?? "").toList();
           excelData.add(rowData);
+
+          // Debug: Print each row's data
+          print("Row data: $rowData");
         }
         break; // Only load the first table
       }
@@ -43,7 +50,10 @@ class _ExcelViewerState extends State<ExcelViewer> {
         _isLoading = false; // Data has been loaded, stop loading spinner
       });
     } catch (e) {
-      debugPrint("Error loading Excel file: $e");
+      print("Error loading Excel file: $e");
+      setState(() {
+        _isLoading = false;
+      });
       _showUnsupportedFileTypeDialog(context);
     }
   }
@@ -58,7 +68,7 @@ class _ExcelViewerState extends State<ExcelViewer> {
             Center(
               child: TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop(); // Close dialog
+                  Navigator.of(context).pop();
                 },
                 child: const Text('OK'),
               ),
@@ -80,36 +90,49 @@ class _ExcelViewerState extends State<ExcelViewer> {
       ),
       body: Stack(
         children: [
-          if (_excelData != null) // Display Excel data if available
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
+          if (_isLoading)
+            const Center(
+              child: CircularProgressIndicator(),
+            ),
+          if (_excelData.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
               child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Table(
-                  border: TableBorder.all(
-                    color: Colors.black, // Border color for cells
-                    width: 1, // Border width
-                    borderRadius: BorderRadius.circular(2),
+                scrollDirection: Axis.horizontal,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Table(
+                    border: TableBorder.all(
+                      color: Colors.black,
+                      width: 1,
+                    ),
+                    defaultColumnWidth: const IntrinsicColumnWidth(),
+                    children: _excelData.map((row) {
+                      return TableRow(
+                        children: row.map((cell) {
+                          return Container(
+                            padding: const EdgeInsets.all(8.0),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black, width: 1),
+                            ),
+                            child: Text(
+                              cell,
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          );
+                        }).toList(),
+                      );
+                    }).toList(),
                   ),
-                  children: _excelData!.map((row) {
-                    return TableRow(
-                      children: row.map((cell) {
-                        return Container(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            cell,
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                        );
-                      }).toList(),
-                    );
-                  }).toList(),
                 ),
               ),
             ),
-          if (_isLoading) // Show loading spinner while loading
+          if (_excelData.isEmpty && !_isLoading)
             const Center(
-              child: CircularProgressIndicator(),
+              child: Text(
+                "No data available or failed to load the Excel file.",
+                style: TextStyle(fontSize: 18, color: Colors.red),
+              ),
             ),
         ],
       ),
