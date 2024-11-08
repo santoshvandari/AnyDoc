@@ -26,7 +26,7 @@ class _ExcelViewerState extends State<ExcelViewer> {
       var fileBytes = await File(widget.filePath).readAsBytes();
       var excel = excel_lib.Excel.decodeBytes(fileBytes);
 
-      if (excel == null) {
+      if (excel.tables.isEmpty) {
         _showUnsupportedFileTypeDialog(context);
         return;
       }
