@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 // import 'package:anydoc/filehandler/doc_handler.dart';
+import 'package:anydoc/filehandler/excel_hander.dart';
 import 'package:anydoc/filehandler/pdf_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -19,18 +20,24 @@ class FilePickerScreen {
     File file = File(result.files.single.path!);
 
     // Save the recently opened file information
+    // Icons.table_chart_outlined
 
     if (file.path.endsWith('.pdf')) {
-      _saveRecentFile(file);
+      _saveRecentFile(file, "pdf");
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => PDFViewer(filePath: file.path),
+      ));
+    } else if (file.path.endsWith(".xlsx") || file.path.endsWith(".xls")) {
+      _saveRecentFile(file, "excel");
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => ExcelViewer(filePath: file.path),
       ));
     } else {
       _showUnsupportedFileTypeDialog(context);
     }
   }
 
-  Future<void> _saveRecentFile(File file) async {
+  Future<void> _saveRecentFile(File file, String icondata) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> recentFiles = prefs.getStringList('recent_files') ?? [];
 
@@ -52,7 +59,7 @@ class FilePickerScreen {
     recentDocuments.insert(0, {
       'title': file.uri.pathSegments.last,
       'date': DateTime.now().toIso8601String(),
-      'icon': 'pdf',
+      'icon': icondata,
       'file_path': file.path,
     });
 

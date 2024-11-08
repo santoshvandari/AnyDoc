@@ -21,56 +21,74 @@ class _RecentScreenState extends State<RecentScreen> {
   }
 
   Future<void> _loadRecentDocuments() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? recentFiles = prefs.getStringList('recent_files');
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      List<String>? recentFiles = prefs.getStringList('recent_files');
 
-    if (recentFiles != null) {
-      setState(() {
-        recentDocuments = recentFiles
-            .map((file) => json.decode(file))
-            .toList()
-            .cast<Map<String, dynamic>>();
-        recentDocuments.sort((a, b) {
-          return DateTime.parse(b['date']).compareTo(DateTime.parse(a['date']));
+      if (recentFiles != null) {
+        setState(() {
+          recentDocuments = recentFiles
+              .map((file) => json.decode(file) as Map<String, dynamic>)
+              .toList();
+          recentDocuments.sort((a, b) {
+            return DateTime.parse(b['date'])
+                .compareTo(DateTime.parse(a['date']));
+          });
         });
-      });
+      }
+    } catch (e) {
+      debugPrint("Error loading recent documents: $e");
     }
   }
 
   Future<void> _removeDocument(int index) async {
-    recentDocuments.removeAt(index);
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> updatedFiles =
-        recentDocuments.map((doc) => json.encode(doc)).toList();
-    await prefs.setStringList('recent_files', updatedFiles);
-    setState(() {});
+    try {
+      recentDocuments.removeAt(index);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      List<String> updatedFiles =
+          recentDocuments.map((doc) => json.encode(doc)).toList();
+      await prefs.setStringList('recent_files', updatedFiles);
+      setState(() {});
+    } catch (e) {
+      debugPrint("Error removing document: $e");
+    }
   }
 
   Future<void> _updateRecentDocument(Map<String, dynamic> document) async {
-    recentDocuments
-        .removeWhere((doc) => doc['file_path'] == document['file_path']);
-    recentDocuments.insert(0, document);
-    document['date'] = DateTime.now().toIso8601String();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> updatedFiles =
-        recentDocuments.map((doc) => json.encode(doc)).toList();
-    await prefs.setStringList('recent_files', updatedFiles);
-    setState(() {});
+    try {
+      document['date'] = DateTime.now().toIso8601String();
+      recentDocuments
+          .removeWhere((doc) => doc['file_path'] == document['file_path']);
+      recentDocuments.insert(0, document);
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      List<String> updatedFiles =
+          recentDocuments.map((doc) => json.encode(doc)).toList();
+      await prefs.setStringList('recent_files', updatedFiles);
+      setState(() {});
+    } catch (e) {
+      debugPrint("Error updating document: $e");
+    }
   }
 
   void _checkFileAndOpen(String filePath, String title) async {
-    final file = File(filePath);
-    if (await file.exists()) {
-      final document =
-          recentDocuments.firstWhere((doc) => doc['file_path'] == filePath);
-      _updateRecentDocument(document);
-      Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => PDFViewer(filePath: filePath),
-      ));
-    } else {
-      debugPrint('File not found: $filePath. Removing from recent documents.');
-      _removeDocument(
-          recentDocuments.indexWhere((doc) => doc['file_path'] == filePath));
+    try {
+      final file = File(filePath);
+      if (await file.exists()) {
+        final document =
+            recentDocuments.firstWhere((doc) => doc['file_path'] == filePath);
+        await _updateRecentDocument(document);
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => PDFViewer(filePath: filePath),
+        ));
+      } else {
+        debugPrint(
+            'File not found: $filePath. Removing from recent documents.');
+        _removeDocument(
+            recentDocuments.indexWhere((doc) => doc['file_path'] == filePath));
+      }
+    } catch (e) {
+      debugPrint("Error checking file and opening: $e");
     }
   }
 
@@ -140,8 +158,8 @@ class _RecentScreenState extends State<RecentScreen> {
                           margin: const EdgeInsets.symmetric(vertical: 8),
                           child: ListTile(
                             leading: const Icon(
-                              Icons.picture_as_pdf,
-                              color: Color(0xFF3E699C),
+                              Icons.table_chart_outlined,
+                              color: const Color(0xFF3E699C),
                             ),
                             title: Text(
                               document['title'] as String,
