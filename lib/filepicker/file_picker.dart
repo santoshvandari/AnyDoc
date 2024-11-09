@@ -12,7 +12,10 @@ class FilePickerScreen {
   void pickFile(BuildContext context) async {
     _showLoadingDialog(context);
 
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf', 'xlsx', 'xls', 'csv', 'txt'],
+    );
 
     Navigator.of(context).pop();
 
