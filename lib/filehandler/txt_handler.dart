@@ -12,6 +12,7 @@ class TXTViewer extends StatefulWidget {
 
 class TXTViewerState extends State<TXTViewer> {
   String _fileContent = "No data loaded yet.";
+  bool _isLoading = true; // Flag to show or hide the preloader
 
   @override
   void initState() {
@@ -28,11 +29,18 @@ class TXTViewerState extends State<TXTViewer> {
         String content = await file.readAsString();
         setState(() {
           _fileContent = content;
+          _isLoading = false;
         });
       } else {
+        setState(() {
+          _isLoading = false;
+        });
         _showUnsupportedFileTypeDialog();
       }
     } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
       _showUnsupportedFileTypeDialog();
     }
   }
@@ -48,15 +56,16 @@ class TXTViewerState extends State<TXTViewer> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Text(
-              _fileContent,
-              style: const TextStyle(fontSize: 16),
-            ),
-          ),
-        ),
+        child: _isLoading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : SingleChildScrollView(
+                child: Text(
+                  _fileContent,
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ),
       ),
     );
   }
