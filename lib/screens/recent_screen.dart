@@ -56,15 +56,20 @@ class _RecentScreenState extends State<RecentScreen> {
 
   Future<void> _updateRecentDocument(Map<String, dynamic> document) async {
     try {
+      // Update the date when the document is opened again
       document['date'] = DateTime.now().toIso8601String();
+
+      // Remove the old entry and insert it at the top
       recentDocuments
           .removeWhere((doc) => doc['file_path'] == document['file_path']);
       recentDocuments.insert(0, document);
 
+      // Save the updated list to SharedPreferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
       List<String> updatedFiles =
           recentDocuments.map((doc) => json.encode(doc)).toList();
       await prefs.setStringList('recent_files', updatedFiles);
+
       setState(() {});
     } catch (e) {
       debugPrint("Error updating document: $e");
@@ -77,7 +82,11 @@ class _RecentScreenState extends State<RecentScreen> {
       if (await file.exists()) {
         final document =
             recentDocuments.firstWhere((doc) => doc['file_path'] == filePath);
+
+        // Update the recent document when it's opened
         await _updateRecentDocument(document);
+
+        // Navigate to the appropriate viewer based on file type
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => PDFViewer(filePath: filePath),
         ));
