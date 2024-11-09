@@ -8,19 +8,18 @@ class HomeScreen extends StatelessWidget {
 
   // Method to check and request permission
   Future<void> _checkAndPickFile(BuildContext context) async {
-    // Check if storage permission is granted
-    PermissionStatus permissionStatus = await Permission.storage.request();
+    // Only for the final release of the app
+    // PermissionStatus permissionStatus = await Permission.storage.request();
+    // if (permissionStatus.isGranted) {
+    //   FilePickerScreen().pickFile(context);
+    // } else if (permissionStatus.isDenied) {
+    //   _showPermissionDeniedDialog(context);
+    // } else if (permissionStatus.isPermanentlyDenied) {
+    //   _showPermissionPermanentlyDeniedDialog(context);
+    // }
 
-    // If permission is granted, proceed to pick the file
-    if (permissionStatus.isGranted) {
-      FilePickerScreen().pickFile(context);
-    } else if (permissionStatus.isDenied) {
-      // Show dialog if permission is denied
-      _showPermissionDeniedDialog(context);
-    } else if (permissionStatus.isPermanentlyDenied) {
-      // Show dialog if permission is permanently denied
-      _showPermissionPermanentlyDeniedDialog(context);
-    }
+    // For testing purposes
+    FilePickerScreen().pickFile(context);
   }
 
   // Dialog to show when permission is denied
