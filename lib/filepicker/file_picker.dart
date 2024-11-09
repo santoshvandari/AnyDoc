@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 // import 'package:anydoc/filehandler/doc_handler.dart';
+import 'package:anydoc/filehandler/csv_handler.dart';
+import 'package:anydoc/filehandler/doc_handler.dart';
 import 'package:anydoc/filehandler/excel_hander.dart';
 import 'package:anydoc/filehandler/pdf_handler.dart';
+import 'package:anydoc/filehandler/ppt_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,11 +30,33 @@ class FilePickerScreen {
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => PDFViewer(filePath: file.path),
       ));
+    } else if (file.path.endsWith(".docx") || file.path.endsWith(".doc")) {
+      // _saveRecentFile(file, "doc");
+      // Navigator.of(context).push(MaterialPageRoute(
+      //   builder: (context) => DocxViewerScreen(file.path),
+      // ));
     } else if (file.path.endsWith(".xlsx") || file.path.endsWith(".xls")) {
       _saveRecentFile(file, "excel");
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => ExcelViewer(filePath: file.path),
       ));
+    } else if (file.path.endsWith("pptx") || file.path.endsWith("ppt")) {
+      // _saveRecentFile(file, "ppt");
+      // Navigator.of(context).push(MaterialPageRoute(
+      //     // builder: (context) => PPTViewer(filePath: file.path),
+
+      //     ));
+    } else if (file.path.endsWith("csv")) {
+      _saveRecentFile(file, "txt");
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => CSVViewer(filePath: file.path),
+      ));
+    } else if (file.path.endsWith("txt")) {
+      // _saveRecentFile(file, "txt");
+      // Navigator.of(context).push(MaterialPageRoute(
+      //     // builder: (context) => PPTViewer(filePath: file.path),
+
+      //     ));
     } else {
       _showUnsupportedFileTypeDialog(context);
     }
