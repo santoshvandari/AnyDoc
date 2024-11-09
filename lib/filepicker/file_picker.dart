@@ -6,6 +6,7 @@ import 'package:anydoc/filehandler/doc_handler.dart';
 import 'package:anydoc/filehandler/excel_hander.dart';
 import 'package:anydoc/filehandler/pdf_handler.dart';
 import 'package:anydoc/filehandler/ppt_handler.dart';
+import 'package:anydoc/filehandler/txt_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -52,11 +53,10 @@ class FilePickerScreen {
         builder: (context) => CSVViewer(filePath: file.path),
       ));
     } else if (file.path.endsWith("txt")) {
-      // _saveRecentFile(file, "txt");
-      // Navigator.of(context).push(MaterialPageRoute(
-      //     // builder: (context) => PPTViewer(filePath: file.path),
-
-      //     ));
+      _saveRecentFile(file, "txt");
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => TXTViewer(filePath: file.path),
+      ));
     } else {
       _showUnsupportedFileTypeDialog(context);
     }
