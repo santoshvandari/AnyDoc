@@ -69,8 +69,13 @@ Currently, the application supports the following file types:
 
 
 ## Contributing
-We welcome contributions! Feel free to submit a pull request or open an issue if you find bugs or want to add new features.
+We welcome contributions! If you'd like to contribute to this AnyDoc Project, please check out our [Contribution Guidelines](Contribution.md).
 
+## Code of Conduct
+Please review our [Code of Conduct](CodeOfConduct.md) before participating in this app.
+
+## License
+This project is licensed under the MIT [License](LICENSE).
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
