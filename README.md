@@ -74,14 +74,14 @@ We welcome contributions! If you'd like to contribute to this AnyDoc Project, pl
 ## Code of Conduct
 Please review our [Code of Conduct](CodeOfConduct.md) before participating in this app.
 
+
 ## License
-This project is licensed under the MIT [License](LICENSE).
-## License
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under Copyright(c) Santosh Bhandari. All rights reserved. See the [LICENSE](LICENSE) file for details.
 
 ## Contact
 For any inquiries or support, please reach out at:
 - **GitHub**: [@santoshvandari](https://github.com/santoshvandari)
 
 
-Thank you for using AnyDoc! Enjoy Using effortlessly!
+
+**Thank you for using AnyDoc! Enjoy Using effortlessly!**
