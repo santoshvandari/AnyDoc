@@ -1,84 +1,9 @@
 import 'package:anydoc/filepicker/file_picker.dart';
 import 'package:anydoc/screens/recent_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
-  // Method to check and request permission
-  Future<void> _checkAndPickFile(BuildContext context) async {
-    // Check if storage permission is granted
-    PermissionStatus permissionStatus = await Permission.storage.request();
-
-    // If permission is granted, proceed to pick the file
-    if (permissionStatus.isGranted) {
-      FilePickerScreen().pickFile(context);
-    } else if (permissionStatus.isDenied) {
-      // Show dialog if permission is denied
-      _showPermissionDeniedDialog(context);
-    } else if (permissionStatus.isPermanentlyDenied) {
-      // Show dialog if permission is permanently denied
-      _showPermissionPermanentlyDeniedDialog(context);
-    }
-  }
-
-  // Dialog to show when permission is denied
-  void _showPermissionDeniedDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Permission Denied'),
-          content: const Text('We need access to your storage to read files.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _checkAndPickFile(context);
-              },
-              child: const Text('Try Again'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  // Dialog to show when permission is permanently denied
-  void _showPermissionPermanentlyDeniedDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Permission Permanently Denied'),
-          content: const Text(
-              'Please enable storage permission from app settings to read files.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                openAppSettings(); // Open app settings
-              },
-              child: const Text('Go to Settings'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,8 +21,7 @@ class HomeScreen extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: 20),
           child: FloatingActionButton(
             onPressed: () {
-              _checkAndPickFile(
-                  context); // Check permission before picking file
+              FilePickerScreen().pickFile(context);
             },
             backgroundColor: const Color(0xFF3E699C),
             elevation: 0,

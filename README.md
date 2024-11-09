@@ -15,7 +15,7 @@ AnyDoc is a simple Flutter application designed to open and view various documen
 ## Screenshots
 <p> <img src="img/Screenshot1.png" alt="Screenshot 1" width="300" style="margin-right: 10px;"/> <img src="img/Screenshot2.png" alt="Screenshot 2" width="300" style="margin-right: 10px;"/> <img src="img/Screenshot3.png" alt="Screenshot 3" width="300" style="margin-right: 10px;"/> </p>
 
-## Getting Started
+## Setting Up Project
 
 To get started with AnyDoc, follow these steps:
 
@@ -24,7 +24,7 @@ To get started with AnyDoc, follow these steps:
 1. Install Flutter on your machine. You can find instructions on how to set up Flutter on your system [here](https://flutter.dev/docs/get-started/install).
 2. Ensure you have an Android/iOS emulator or a physical device ready to test the app.
 
-### Installation
+### Setup
 
 1. Clone this repository to your local machine:
 
