@@ -1,4 +1,7 @@
+import 'package:anydoc/filehandler/csv_handler.dart';
+import 'package:anydoc/filehandler/excel_hander.dart';
 import 'package:anydoc/filehandler/pdf_handler.dart';
+import 'package:anydoc/filehandler/txt_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -76,7 +79,7 @@ class _RecentScreenState extends State<RecentScreen> {
     }
   }
 
-  void _checkFileAndOpen(String filePath, String title) async {
+  void _checkFileAndOpen(String filePath, String title, String filetype) async {
     try {
       final file = File(filePath);
       if (await file.exists()) {
@@ -86,10 +89,19 @@ class _RecentScreenState extends State<RecentScreen> {
         // Update the recent document when it's opened
         await _updateRecentDocument(document);
 
-        // Navigate to the appropriate viewer based on file type
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => PDFViewer(filePath: filePath),
-        ));
+        if (filetype.isNotEmpty) {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => filetype == 'pdf'
+                ? PDFViewer(filePath: filePath)
+                : filetype == 'txt'
+                    ? TXTViewer(filePath: filePath)
+                    : filetype == 'csv'
+                        ? CSVViewer(filePath: filePath)
+                        : filetype == 'excel'
+                            ? ExcelViewer(filePath: filePath)
+                            : PDFViewer(filePath: filePath),
+          ));
+        }
       } else {
         debugPrint(
             'File not found: $filePath. Removing from recent documents.');
@@ -114,7 +126,8 @@ class _RecentScreenState extends State<RecentScreen> {
               title: const Text('Open'),
               onTap: () {
                 Navigator.pop(context);
-                _checkFileAndOpen(document['file_path'], document['title']);
+                _checkFileAndOpen(document['file_path'], document['title'],
+                    document['filetype']);
               },
             ),
             ListTile(
@@ -160,14 +173,24 @@ class _RecentScreenState extends State<RecentScreen> {
                       itemCount: recentDocuments.length,
                       itemBuilder: (context, index) {
                         final document = recentDocuments[index];
+                        final filetype = document['filetype'] as String;
+                        IconData icondata = filetype == "pdf"
+                            ? (Icons.picture_as_pdf)
+                            : filetype == "txt"
+                                ? (Icons.text_snippet)
+                                : filetype == "csv"
+                                    ? (Icons.table_chart_outlined)
+                                    : filetype == "excel"
+                                        ? (Icons.table_chart_outlined)
+                                        : (Icons.insert_drive_file);
                         return Card(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                           margin: const EdgeInsets.symmetric(vertical: 8),
                           child: ListTile(
-                            leading: const Icon(
-                              Icons.table_chart_outlined,
+                            leading: Icon(
+                              icondata,
                               color: const Color(0xFF3E699C),
                             ),
                             title: Text(
@@ -187,8 +210,8 @@ class _RecentScreenState extends State<RecentScreen> {
                               },
                             ),
                             onTap: () {
-                              _checkFileAndOpen(
-                                  document['file_path'], document['title']);
+                              _checkFileAndOpen(document['file_path'],
+                                  document['title'], document['filetype']);
                             },
                           ),
                         );
