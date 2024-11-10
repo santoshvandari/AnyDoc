@@ -2,3 +2,4 @@ handeling the docx file reader
 handeling the ppt reader
 handeling the icons in recent files. 
 handeling the dublicate storing of same data in recent files. 
+File will not opened when it is opened through the file manager or directely. 

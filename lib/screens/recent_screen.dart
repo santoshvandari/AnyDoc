@@ -1,4 +1,5 @@
 import 'package:anydoc/filehandler/csv_handler.dart';
+import 'package:anydoc/filehandler/doc_handler.dart';
 import 'package:anydoc/filehandler/excel_hander.dart';
 import 'package:anydoc/filehandler/pdf_handler.dart';
 import 'package:anydoc/filehandler/txt_handler.dart';
@@ -93,13 +94,15 @@ class _RecentScreenState extends State<RecentScreen> {
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => filetype == 'pdf'
                 ? PDFViewer(filePath: filePath)
-                : filetype == 'txt'
-                    ? TXTViewer(filePath: filePath)
-                    : filetype == 'csv'
-                        ? CSVViewer(filePath: filePath)
-                        : filetype == 'excel'
-                            ? ExcelViewer(filePath: filePath)
-                            : PDFViewer(filePath: filePath),
+                : filetype == 'docx'
+                    ? DocxViewer(filePath: filePath)
+                    : filetype == 'txt'
+                        ? TXTViewer(filePath: filePath)
+                        : filetype == 'csv'
+                            ? CSVViewer(filePath: filePath)
+                            : filetype == 'excel'
+                                ? ExcelViewer(filePath: filePath)
+                                : PDFViewer(filePath: filePath),
           ));
         }
       } else {
@@ -176,13 +179,15 @@ class _RecentScreenState extends State<RecentScreen> {
                         final filetype = document['filetype'] as String;
                         IconData icondata = filetype == "pdf"
                             ? (Icons.picture_as_pdf)
-                            : filetype == "txt"
-                                ? (Icons.text_snippet)
-                                : filetype == "csv"
-                                    ? (Icons.table_chart_outlined)
-                                    : filetype == "excel"
+                            : filetype == "docx"
+                                ? (Icons.article)
+                                : filetype == "txt"
+                                    ? (Icons.text_snippet)
+                                    : filetype == "csv"
                                         ? (Icons.table_chart_outlined)
-                                        : (Icons.insert_drive_file);
+                                        : filetype == "excel"
+                                            ? (Icons.table_chart_outlined)
+                                            : (Icons.insert_drive_file);
                         return Card(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
