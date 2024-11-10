@@ -36,6 +36,23 @@
                 <data android:mimeType="application/pdf"/>
             </intent-filter>
 
+            <!-- Word files (DOCX) -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:mimeType="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
+            </intent-filter>
+
+            <!-- Word files (DOC) -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:mimeType="application/msword"/>
+            </intent-filter>
+
+
             <!-- Excel files (XLSX) -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
