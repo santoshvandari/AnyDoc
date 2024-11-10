@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:anydoc/filehandler/csv_handler.dart';
+import 'package:anydoc/filehandler/doc_handler.dart';
 import 'package:anydoc/filehandler/excel_hander.dart';
 import 'package:anydoc/filehandler/pdf_handler.dart';
 import 'package:anydoc/filehandler/txt_handler.dart';
@@ -14,7 +15,7 @@ class FilePickerScreen {
 
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['pdf', 'xlsx', 'xls', 'csv', 'txt'],
+      allowedExtensions: ['pdf', 'xlsx', 'xls', 'csv', 'txt', 'docx', 'doc'],
     );
 
     Navigator.of(context).pop();
@@ -30,6 +31,11 @@ class FilePickerScreen {
       _saveRecentFile(file, "pdf");
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => PDFViewer(filePath: file.path),
+      ));
+    } else if (file.path.endsWith(".docx") || file.path.endsWith(".doc")) {
+      _saveRecentFile(file, "docx");
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => DocxViewer(filePath: file.path),
       ));
     } else if (file.path.endsWith(".xlsx") || file.path.endsWith(".xls")) {
       _saveRecentFile(file, "excel");
