@@ -13,45 +13,51 @@ class FilePickerScreen {
   void pickFile(BuildContext context) async {
     _showLoadingDialog(context);
 
+    // Pick files with custom extensions
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf', 'xlsx', 'xls', 'csv', 'txt', 'docx', 'doc'],
     );
 
+    // Dismiss the loading dialog once the user selects a file
     Navigator.of(context).pop();
 
-    if (result == null || result.files.isEmpty) return;
+    if (result == null || result.files.isEmpty) {
+      // If no file is selected, exit the method
+      return;
+    }
 
-    File file = File(result.files.single.path!);
+    // Call the method to open the selected file
+    openFile(context, result.files.single.path!);
+  }
 
-    // Save the recently opened file information
-    // Icons.table_chart_outlined
-
+  void openFile(BuildContext context, String filePath) {
+    File file = File(filePath);
     if (file.path.endsWith('.pdf')) {
-      _saveRecentFile(file, "pdf");
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => PDFViewer(filePath: file.path),
       ));
-    } else if (file.path.endsWith(".docx") || file.path.endsWith(".doc")) {
-      _saveRecentFile(file, "docx");
+      _saveRecentFile(file, 'pdf');
+    } else if (file.path.endsWith('.docx') || file.path.endsWith('.doc')) {
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => DocxViewer(filePath: file.path),
       ));
-    } else if (file.path.endsWith(".xlsx") || file.path.endsWith(".xls")) {
-      _saveRecentFile(file, "excel");
+      _saveRecentFile(file, 'doc');
+    } else if (file.path.endsWith('.xlsx') || file.path.endsWith('.xls')) {
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => ExcelViewer(filePath: file.path),
       ));
-    } else if (file.path.endsWith("csv")) {
-      _saveRecentFile(file, "csv");
+      _saveRecentFile(file, 'excel');
+    } else if (file.path.endsWith('.csv')) {
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => CSVViewer(filePath: file.path),
       ));
-    } else if (file.path.endsWith("txt")) {
-      _saveRecentFile(file, "txt");
+      _saveRecentFile(file, 'csv');
+    } else if (file.path.endsWith('.txt')) {
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => TXTViewer(filePath: file.path),
       ));
+      _saveRecentFile(file, 'txt');
     } else {
       _showUnsupportedFileTypeDialog(context);
     }
