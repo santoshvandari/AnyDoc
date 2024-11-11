@@ -40,6 +40,7 @@ dependencies:
   excel: ^4.0.6
   csv: ^6.0.0
   docx_to_text: ^1.0.1
+  receive_sharing_intent: ^1.8.1
 
 
 
